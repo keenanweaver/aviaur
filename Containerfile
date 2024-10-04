@@ -33,10 +33,10 @@ ARG SOURCE_IMAGE="aurora"
 # - stable-zfs
 # - stable-nvidia-zfs
 # - (and the above with testing rather than stable)
-ARG SOURCE_SUFFIX="-nvidia"
+ARG SOURCE_SUFFIX="-dx-nvidia"
 
 ## SOURCE_TAG arg must be a version built for the specific image: eg, 39, 40, gts, latest
-ARG SOURCE_TAG="latest"
+ARG SOURCE_TAG="stable"
 
 
 ### 2. SOURCE IMAGE
@@ -47,6 +47,11 @@ FROM ghcr.io/ublue-os/${SOURCE_IMAGE}${SOURCE_SUFFIX}:${SOURCE_TAG}
 ### 3. MODIFICATIONS
 ## make modifications desired in your image and install packages by modifying the build.sh script
 ## the following RUN directive does all the things required to run "build.sh" as recommended.
+
+## Add displaylink support
+COPY --from=ghcr.io/ublue-os/akmods-extra:coreos-stable-40 /rpms/ /tmp/rpms
+RUN curl -Lo /etc/yum.repos.d/fedora-multimedia.repo https://negativo17.org/repos/fedora-multimedia.repo
+RUN find /tmp/rpms
 
 COPY build.sh /tmp/build.sh
 
